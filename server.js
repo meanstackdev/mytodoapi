@@ -3,39 +3,16 @@
  */
 
 var express = require('express');
-var app = express();
+var bodyparser =  require('body-parser');
 var PORT = process.env.PORT || 3000;
+var app = express();
+app.use(bodyparser.json());
 // Create Employee Data
-var employee = [
-
-    {
-        id :1,
-        name : 'Vijay Kumar Reddy',
-        jobroll: ' Node Js Developer',
-        salary:25000
-
-    },
-    {
-        id :2,
-        name : 'Rahul Guptha',
-        jobroll: ' Webdeveloper',
-        salary:2000
-
-    },
-    {
-        id :3,
-        name : 'MadhuSudhan',
-        jobroll: ' Hr Manager',
-        salary:15000
-
-    }
-];
-
+var employee=[];
+var empid=1;
 // Create Sever frist request
 
-app.get('/',function (req,res) {
-    res.send('Welcome to node and express js website');
-});
+app.use(express.static(__dirname +'/public'));
 
 // GET Employee Data 
 
@@ -62,6 +39,16 @@ app.get('/empdata/:id',function (req,res) {
         res.status(404).send('No data found this id : '+ empid);
     }
 });
+//POST Request
+ app.post('/empdata',function (req,res) {
+
+     var body = req.body;
+     body.id = empid ++ ;
+     // Push data into  employee array
+     employee.push(body);
+     res.json(employee);
+     
+ });
 
 // app listen local port 
 app.listen(PORT,function () {
