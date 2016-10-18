@@ -4,8 +4,10 @@
 
 var express = require('express');
 var bodyparser =  require('body-parser');
-var PORT = process.env.PORT || 3000;
 var app = express();
+var _=require('underscore');
+var PORT = process.env.PORT || 3000;
+
 app.use(bodyparser.json());
 // Create Employee Data
 var employee=[];
@@ -24,13 +26,14 @@ app.get('/Empdata',function (req,res) {
 app.get('/empdata/:id',function (req,res) {
 
     var empid = parseInt(req.params.id);
-    var matchid;
-    employee.forEach(function (emp_id) {
+    var matchid = _.findWhere(employee,{id:empid});
+
+  /*  employee.forEach(function (emp_id) {
         if(empid === emp_id.id)
         {
             matchid = emp_id;
         }
-    });
+    });*/
     if(matchid)
     {
         res.json(matchid);
@@ -42,12 +45,15 @@ app.get('/empdata/:id',function (req,res) {
 //POST Request
  app.post('/empdata',function (req,res) {
 
-     var body = req.body;
+     var body = _.pick(req.body,"description","complited");
+     if(!_.isBoolean(body.complited) ||!_.isString(body.description) || body.description.trim().length===0 ){
+         return res.status(400).send();
+     };
+     body.description=body.description.trim();
      body.id = empid ++ ;
      // Push data into  employee array
      employee.push(body);
-     res.json(employee);
-     
+    res.json(employee);
  });
 
 // app listen local port 
