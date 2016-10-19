@@ -69,6 +69,41 @@ app.delete('/empdata/:id',function (req,res) {
          res.json(employee);
      }
 });
+ // Update Request
+app.put('/empdata/:id',function (req,res) {
+    var empid = parseInt(req.params.id,10);
+    var body = _.pick(req.body,"description","complited");
+    var matchid = _.findWhere(employee,{id:empid});
+    var validAttibute = {};
+
+    if(!matchid)
+    {
+        return res.status(404).send();
+    }
+
+    if(body.hasOwnProperty('complited') && _.isBoolean(body.complited) )
+    {
+        validAttibute.complited=body.complited;
+    }else if(body.hasOwnProperty('complited'))
+    {
+        return res.status(400).send();
+    }
+
+    if(body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length>0)
+    {
+        validAttibute.description = body.description;
+    }
+    else if (body.hasOwnProperty('description'))
+    {
+        return res.status(400).send();
+    }
+     _.extend(matchid,validAttibute);
+    res.json(matchid);
+
+
+
+
+});
 // app listen local port 
 app.listen(PORT,function () {
     console.log('Server Running at local port :' + PORT);
