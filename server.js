@@ -55,7 +55,20 @@ app.get('/empdata/:id',function (req,res) {
      employee.push(body);
     res.json(employee);
  });
-
+// Delect Request
+app.delete('/empdata/:id',function (req,res) {
+     var empid =  parseInt(req.params.id , 10);
+     var matchid=_.findWhere(employee,{id:empid});
+     if(!matchid)
+     {
+         res.status(404).json({'Error':'No data found that id'});
+     }
+    else
+     {
+         employee =_.without(employee,matchid);
+         res.json(employee);
+     }
+});
 // app listen local port 
 app.listen(PORT,function () {
     console.log('Server Running at local port :' + PORT);
